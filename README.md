@@ -35,9 +35,11 @@ $ mamba env create --file conda/env.yml
 ```
 You can use conda instead of mamba `$ conda env create --file conda/env.yml`
 
-To run the app
+To activate virutal env and run the app
 
 ```
+$ conda activate shinyapp
+
 $ shiny run app.py
 ```
 
