@@ -6,7 +6,7 @@ authors = ["EverVino <evervino00@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "<=3.10"
 shiny = "^0.2.9"
 matplotlib = "^3.6.2"
 

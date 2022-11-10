@@ -1,6 +1,6 @@
 # python-shiny-app-template
 
-## Run on virtual environment:
+## Run on virtual environment with poetry:
 
 **Pre-requisites**
 
@@ -15,7 +15,7 @@ $ poetry shell
 $ shiny run app.py
 ```
 
-You can see the app through a the localhost http://127.0.0.1:8000
+You can see the app through localhost http://127.0.0.1:8000
 
 To stop running Press Ctrl + C
 
@@ -23,3 +23,22 @@ To stop virtual env
 ```
 $ exit
 ```
+
+## Run on virutal environment with Conda
+
+**Pre-requisites**
+
+- mamba or conda
+
+```
+$ mamba env create --file conda/env.yml
+```
+You can use conda instead of mamba `$ conda env create --file conda/env.yml`
+
+To run the app
+
+```
+$ shiny run app.py
+```
+
+You can see the app through localhost http://127.0.0.1:8000
