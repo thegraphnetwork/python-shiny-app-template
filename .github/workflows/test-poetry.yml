@@ -16,5 +16,6 @@ jobs:
         run: poetry install
       - name: poetry shell
         run: | 
-          poetry run shiny run app.py
+          poetry run shiny run app.py &
+          sleep 5
           ^C
