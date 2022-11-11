@@ -17,3 +17,4 @@ jobs:
       - name: poetry shell
         run: | 
           poetry run shiny run app.py
+          ^C
