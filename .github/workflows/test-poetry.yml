@@ -1,0 +1,14 @@
+name: poetry-test
+on: [push, pull_request]
+jobs:
+  testing:
+    runs-on: Ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+      - name: install poetry pyproject.toml
+        run: poetry install
+      - name: run app
+        run: poetry shell
