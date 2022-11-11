@@ -12,6 +12,7 @@ jobs:
         uses: abatilo/actions-poetry@v2
         with:
           poetry-version: "1.1.15"
-      - name: View poetry --help
+      - name: View poetry install
         run: poetry install
+      - name: poetry shell
         run: poetry shell
