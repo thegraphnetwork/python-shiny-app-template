@@ -9,7 +9,7 @@ jobs:
         with:
           miniconda-version: "latest"
           mamba-version: "*"
-          environment-file: conda/env.yaml
+          environment-file: conda/env.yml
           channels: conda-forge,nodefaults
           activate-environment: shinyapp
           use-mamba: true
