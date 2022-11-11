@@ -17,5 +17,6 @@ jobs:
       - name: poetry shell
         run: | 
           poetry run shiny run app.py &
-          sleep 5
-          ^C
+          sleep 5 &
+          kill %% 
+          
