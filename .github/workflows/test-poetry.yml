@@ -15,4 +15,4 @@ jobs:
       - name: View poetry install
         run: poetry install
       - name: poetry shell
-        run: poetry shell
+        run: poetry run shiny run app.py
