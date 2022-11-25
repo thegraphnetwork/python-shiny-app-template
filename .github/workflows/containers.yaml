@@ -1,0 +1,33 @@
+name: containers
+on: [push, pull_request]
+
+jobs:
+  testing-conda:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          miniconda-version: "latest"
+          mamba-version: "*"
+          environment-file: conda/containers.yaml
+          channels: conda-forge,nodefaults
+          activate-environment: shinyapp
+          use-mamba: true
+          miniforge-variant: Mambaforge
+
+      - name: build images
+        run: make containers-build
+
+      - name: start service
+        run: make containers-start
+
+      - name: health check
+        run: make containers-wait SERVICE=shinyapp
+
+      - name: stop services
+        run: make containers-stop

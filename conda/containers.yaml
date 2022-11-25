@@ -4,5 +4,6 @@ channels:
   - nodefaults
 dependencies:
   - docker-compose
+  - make
   - podman
   - podman-compose

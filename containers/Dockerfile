@@ -5,7 +5,7 @@ FROM condaforge/mambaforge:latest
 LABEL maintainer="Ivan Ogasawara <ivan.ogasawara@gmail.com>"
 LABEL org.opencontainers.image.title="EpiGraphHub"
 LABEL org.opencontainers.image.authors="EpiGraphHub Team"
-LABEL org.opencontainers.image.source="https://github.com/thegraphnetwork/EpiGraphHub"
+LABEL org.opencontainers.image.source="https://github.com/thegraphnetwork/python-shiny-app-template"
 LABEL org.opencontainers.image.version="latest"
 LABEL org.opencontainers.image.description="EpiGraphHub"
 LABEL org.thegraphnetwork.epigraphhub.version="latest"
@@ -18,7 +18,7 @@ SHELL ["/bin/bash", "-c"]
 # executing commands with /bin/bash -c
 # Needed to have the micromamba activate command configured etc.
 
-ENV ENV_NAME=epigraphhub
+ENV ENV_NAME=shinyapp
 ENV DEBIAN_FRONTEND=noninteractive
 ARG UID=1000
 ARG GID=1000
@@ -26,60 +26,45 @@ ARG GID=1000
 RUN apt-get update -y \
   && apt-get install -y \
     build-essential \
-    zip \
-    make \
-    cron \
     curl \
-    wget \
-    sudo \
     tini \
   && rm -rf /var/lib/apt/lists/* \
     /var/cache/apt/archives \
-    /tmp/* \
-  && addgroup --gid ${GID} epigraphhub \
+    /tmp/*
+
+RUN addgroup --gid ${GID} epigraphhub \
   && useradd --uid ${UID} --gid ${GID} -ms /bin/bash epigraphhub \
-  && mkdir -p /opt/EpiGraphHub \
-  && chmod -R a+rwx /opt/conda /opt/EpiGraphHub \
+  && mkdir -p /opt/services \
+  && chmod -R a+rwx /opt/conda /opt/services \
   && export ENV_NAME="$ENV_NAME" \
-  && echo "epigraphhub ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/epigraphhub \
-  && chmod 0440 /etc/sudoers.d/epigraphhub \
-  && mkdir -p /opt/superset \
-  && chown epigraphhub:epigraphhub /opt/superset \
-  && chmod a+rw /var/log/
+  && chown epigraphhub:epigraphhub /opt/services
+
 
 USER epigraphhub
 
-WORKDIR /opt/EpiGraphHub
+COPY --chown=epigraphhub:epigraphhub ./conda/ /tmp/conda
 
-COPY --chown=epigraphhub:epigraphhub conda/ /tmp/conda
+WORKDIR /opt/services/shinyapp
 
 ENV PATH /opt/conda/envs/$ENV_NAME/bin:$PATH
-ENV PYTHONPATH='/opt/superset:/opt/EpiGraphHub'
-ENV ANSIBLE_CONFIG='/opt/EpiGraphHub/playbooks/ansible.cfg'
+ENV PYTHONPATH='/opt/services/shinyapp'
 
-RUN mamba env create -n $ENV_NAME --file /tmp/conda/superset.yaml \
+RUN mamba env create -n $ENV_NAME --file /tmp/conda/local.yaml \
   && conda clean --all \
   && find /opt/conda/ -type f,l -name '*.a' -delete \
   && find /opt/conda/ -type f,l -name '*.pyc' -delete \
   && find /opt/conda/ -type f,l -name '*.js.map' -delete \
   && rm -rf /opt/conda/pkgs /tmp/*
 
-# note: keeping it to the end of the recipes helps to avoid rebuilding the
-#       image after every change.
-# COPY --chown=epigraphhub:epigraphhub . /opt/EpiGraphHub
 
-COPY --chown=epigraphhub:epigraphhub containers/superset/superset.sh /opt/superset.sh
-# note: these files can be overwriten by docker compose volumes in order to
-#       use the last version without building the image again.
-COPY --chown=epigraphhub:epigraphhub containers/superset/ /opt/superset
-COPY --chown=epigraphhub:epigraphhub containers/superset/entrypoint.sh /opt/entrypoint.sh
+COPY --chown=epigraphhub:epigraphhub ./* /opt/services/shinyapp
+
+RUN poetry install
+
+COPY --chown=epigraphhub:epigraphhub containers/entrypoint.sh /opt/entrypoint.sh
 
 RUN chmod +x /opt/entrypoint.sh \
-  && echo "source /opt/entrypoint.sh" > ~/.bashrc \
-  && sudo mkdir -p /opt/data/superset/ \
-  && sudo chown -R epigraphhub:epigraphhub /opt/data \
-  && sudo chown -R epigraphhub:epigraphhub /var/log/*
-
+  && echo "source /opt/entrypoint.sh" > ~/.bashrc
 
 ENTRYPOINT ["tini", "--", "/opt/entrypoint.sh"]
-CMD ["/opt/superset.sh"]
+CMD ["shiny run app/app.py"]
