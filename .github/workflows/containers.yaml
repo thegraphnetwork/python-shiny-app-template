@@ -20,6 +20,12 @@ jobs:
           use-mamba: true
           miniforge-variant: Mambaforge
 
+      - name: Create environment variables file
+        run: |
+          export HOST_UID=$(id -u)
+          export HOST_GID=$(id -g)
+          envsubst < .env.tpl > .env
+
       - name: build images
         run: make containers-build
 
