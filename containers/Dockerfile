@@ -56,10 +56,10 @@ RUN mamba env create -n $ENV_NAME --file /tmp/conda/local.yaml \
   && find /opt/conda/ -type f,l -name '*.js.map' -delete \
   && rm -rf /opt/conda/pkgs /tmp/*
 
+COPY --chown=epigraphhub:epigraphhub ./ /opt/services/shinyapp/
 
-COPY --chown=epigraphhub:epigraphhub ./* /opt/services/shinyapp
-
-RUN poetry install
+RUN poetry config virtualenvs.create false \
+  && poetry install
 
 COPY --chown=epigraphhub:epigraphhub containers/entrypoint.sh /opt/entrypoint.sh
 

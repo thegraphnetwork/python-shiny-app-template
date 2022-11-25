@@ -2,7 +2,7 @@ name: containers
 on: [push, pull_request]
 
 jobs:
-  testing-conda:
+  containers:
     runs-on: ubuntu-latest
     defaults:
       run:

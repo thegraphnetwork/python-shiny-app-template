@@ -24,4 +24,4 @@ services:
     volumes:
       - ..:/opt/services/shinyapp
     ports:
-      - 38123:8000
+      - 8000:8000
