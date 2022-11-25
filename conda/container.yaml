@@ -1,0 +1,8 @@
+name: shinyapp
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - docker-compose
+  - podman
+  - podman-compose

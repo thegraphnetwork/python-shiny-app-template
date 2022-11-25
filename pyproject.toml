@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A template for shiny for python"
 authors = ["EverVino <evervino00@gmail.com>"]
 license = "MIT"
+packages = [{include='app'}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
