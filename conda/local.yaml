@@ -3,5 +3,5 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - shiny
-  - matplotlib
+  - poetry
+  - python
